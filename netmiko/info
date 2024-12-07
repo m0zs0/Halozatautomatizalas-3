@@ -1,0 +1,9 @@
+PC1 ---------------- Router console
+preconfot puttyal kábelen fetölteni
+
+
+PC2 ---------------- Router fa0/0 
+Egy mappába sendconf állományokat bemásolni
+py-t futtatni
+
+PC1-en megnézni, hogy átment -e a cucc
