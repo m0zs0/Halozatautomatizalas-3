@@ -13,7 +13,7 @@
 show version
 ```
 3. lépés:	Állítsd be az alap IP konfigurációt
-```bash
+```console
 interface GigabitEthernet0/0/0
 ip address 192.168.1.1 255.255.255.0 
 no shutdown
