@@ -19,7 +19,7 @@ ip address 192.168.1.1 255.255.255.0
 no shutdown
 ```
 4. lépés:	Állítsd be az SSH-t (a felhasználó neve cisco, jelszava cisco123! legyen)
-```
+```console
 username admin privilege 15 secret cisco123! 
 ip domain-name moriczref.hu 
 crypto key generate rsa general-keys modulus 1024 
