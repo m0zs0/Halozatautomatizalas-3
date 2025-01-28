@@ -43,7 +43,7 @@ https://192.168.1.1/restconf/data/ietf-interfaces:interfaces
 ```
 3. lépés:	Az URL mező alatti `Auth` tab-on válaszd `Basic`-et, majd írd be a felhasználónevet és a jelszót! (admin, cisco123!)
 4. lépés:	Ezután válaszd a `Headers` tab-ot! Adj meg egy kulcsot `Content-Type` névvel, és `application/yang-data+json` értékkel, illetve egy `Accept` kulcsot szintén `application/yang-data+json` értékkel.
-5. lépés:	A `Send` gombra kattintva az alábbi eredményt látod: 
+5. lépés:	A `Send` gombra kattintva az alábbi eredményt -*Response*- látod: 
 ```
 {
     "ietf-interfaces:interface": {
@@ -61,4 +61,37 @@ https://192.168.1.1/restconf/data/ietf-interfaces:interfaces
         }
 }
 ```
-   
+
+## III. Konfigurációmódosítás a Routeren
+1. lépés:	Hozz létre egy `New Request`-et! Ezúttal a `PUT` kérést válaszd, majd a mezőbe írd be a következő sort: 
+```
+https://192.168.1.1/restconf/data/ietf-interfaces:interfaces
+```
+2. lépés:	Az URL mező alatti `Auth` tab-on válaszd `Basic`-et, majd írd be a felhasználónevet és a jelszót! (admin, cisco123!)
+3. lépés:	Ezután válaszd a `Headers` tab-ot! Adj meg egy kulcsot `Content-Type` névvel, és `application/yang-data+json` értékkel, illetve egy `Accept` kulcsot szintén `application/yang-data+json` értékkel.
+4. lépés:	Válaszd ki a `Body/JSON` tab-ot! Másold be ide az előbbi kérésnél kapott *Response* tartalmat! 
+5. lépés:	Módosítsd a kódot úgy, hogy a `GigabitEthernet0/0/1` interfészének az `enable` értékét `true`-ra állítod, valamint beállítod az interface IP címét `192.168.2.1/24`-re.
+6. lépés:	Kattints a `Send` gombra!
+7. lépés:	Ellenőrzés: A `GET`-el és/vagy az Admin PC-vel ellenőrizd le, hogy sikeres volt-e a konfiguráció!
+```
+{
+    "ietf-interfaces:interface": {
+          "name": "GigabitEthernet0",
+		    "enabled": true,
+          "ietf-ip:ipv4": {
+            "address": [
+                "ip": "192.168.1.1",
+                "netmask": "255.255.255.0"
+            ]
+          },
+        { 
+          "name": "GigabitEthernet1",
+		    "enabled": true,
+          "ietf-ip:ipv4": {
+            "address": [
+                "ip": "192.168.2.1",
+                "netmask": "255.255.255.0"
+            ]
+        }
+}
+```
