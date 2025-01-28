@@ -28,3 +28,37 @@ line vty 0 4
 login local transport input ssh
 ```
 5. lépés:	Állítsd be a RESTConf használatát
+```console
+ip http secure-server
+restconf
+```
+6. lépés:	Kösd össze a Client PC-t a Router0-val, a GigabitEthernet0/0/0 porton egy Switch-en keresztül
+7. lépés:	Állítsd be a Client PC IP címét 192.168.1.10/24-re.
+
+## II. Adatlekérdezés a Routertől
+1. lépés:	Nyisd meg a `Visual Studio Code`-ot, majd annak `Thunder Client` bűvítményét! Hozz létre egy `New Request`-et! 
+2. lépés:	A kérés típusánál válaszd a `GET`-et, majd a mezőbe írd be: 
+```
+https://192.168.1.1/restconf/data/ietf-interfaces:interfaces
+```
+3. lépés:	Az URL mező alatti `Auth` tab-on válaszd `Basic`-et, majd írd be a felhasználónevet és a jelszót! (admin, cisco123!)
+4. lépés:	Ezután válaszd a `Headers` tab-ot! Adj meg egy kulcsot `Content-Type` névvel, és `application/yang-data+json` értékkel, illetve egy `Accept` kulcsot szintén `application/yang-data+json` értékkel.
+5. lépés:	A `Send` gombra kattintva az alábbi eredményt látod: 
+```
+{
+    "ietf-interfaces:interface": {
+          "name": "GigabitEthernet0",
+		    "enabled": true,
+          "ietf-ip:ipv4": {
+            "address": [
+                "ip": "192.168.1.1",
+                "netmask": "255.255.255.0"
+            ]
+          },
+        {
+          "name": "GigagbitEthernet1",
+          "enabled": false
+        }
+}
+```
+   
