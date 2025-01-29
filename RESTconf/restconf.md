@@ -25,7 +25,8 @@ ip domain-name moriczref.hu
 crypto key generate rsa general-keys modulus 1024 
 ip ssh version 2 
 line vty 0 4 
-login local transport input ssh
+login local
+transport input ssh
 ```
 5. lépés:	Állítsd be a RESTConf használatát
 ```console
