@@ -34,7 +34,7 @@ ip http secure-server
 restconf
 ```
 6. lépés:	Kösd össze a Client PC-t a Router0-val, a GigabitEthernet0/0/0 porton egy Switch-en keresztül
-7. lépés:	Állítsd be a Client PC IP címét 192.168.1.10/24-re.
+7. lépés:	Állítsd be a Client PC IP címét 192.168.1.10/24-re, és az átjárót is.
 
 ## II. Adatlekérdezés a Routertől
 1. lépés:	Nyisd meg a `Visual Studio Code`-ot, majd annak `Thunder Client` bűvítményét! Hozz létre egy `New Request`-et! 
