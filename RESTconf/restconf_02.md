@@ -1,5 +1,9 @@
 # RESTconf használata 2 - Laborgyakorlat
 
+## 0. API dokumentáció: 
+
+https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/prog/configuration/166/b_166_programmability_cg/restconf_prog_int.pdf
+
 ## 1. Hostname lekérdezése
 
 ```console
