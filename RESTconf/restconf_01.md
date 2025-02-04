@@ -99,6 +99,7 @@ https://192.168.1.1/restconf/data/ietf-interfaces:interfaces
 ```
 
 API dokumentáció:
+https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/prog/configuration/166/b_166_programmability_cg/restconf_prog_int.pdf
 
 Feladatok:
 
