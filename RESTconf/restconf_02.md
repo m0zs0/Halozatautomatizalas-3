@@ -60,29 +60,32 @@ Headers/Content-Type: "application/yang-data+json"
 Headers/Accept: "application/yang-data+json"
 ```
 
-## 6. GigabitEthernet 0/0/0 IP címzése és felkapcsolása
+## 6. GigabitEthernet 0/0/1 IP címzése és felkapcsolása
 ```console
 PUT
-https://192.168.1.1/restconf/data/ietf-interfaces:interfaces/interface=GigabitEthernet0/0/0
+https://192.168.1.1/restconf/data/ietf-interfaces:interfaces/interface=GigabitEthernet0%2F0%2F1
 Auth/Basic/Username: "admin"
 Auth/Basic/Password: "cisco123!"
 Headers/Content-Type: "application/yang-data+json"
 Headers/Accept: "application/yang-data+json"
 Body/JSON:
 {
-    "ietf-interfaces:interface": {
-        "name": "GigabitEthernet0/0/0",
-        "enabled": true,
-        "ietf-ip:ipv4": {
-            "address": [
-                {
-                    "ip": "192.168.1.1",
-                    "netmask": "255.255.255.0"
-                }
-            ]
+  "ietf-interfaces:interface": {
+    "name": "GigabitEthernet0/0/1",
+    "type": "iana-if-type:ethernetCsmacd",
+    "enabled": true,
+    "ietf-ip:ipv4": {
+      "address": [
+        {
+          "ip": "192.168.2.1",
+          "netmask": "255.255.255.0"
         }
-    }
+      ]
+    },
+    "ietf-ip:ipv6": {}
+  }
 }
+
 ```
 
 ## 7. Banner lekérdezése
@@ -105,15 +108,13 @@ Headers/Content-Type: "application/yang-data+json"
 Headers/Accept: "application/yang-data+json"
 Body/JSON:
 {
-    "Cisco-IOS-XE-native:banner": {
-        "login": {
-            "banner": "#Welcome to the router!#"
-        }
-    }
+  "Cisco-IOS-XE-native:motd": {
+    "banner": "#Jogosulatlan hozzaferes tilos#"
+  }
 }
 ```
 
-## 9. Jelszavak lekérdezése
+## 9. Admin jelszó lekérdezése
 ```console
 GET
 https://192.168.1.1/restconf/data/Cisco-IOS-XE-native:native/username
