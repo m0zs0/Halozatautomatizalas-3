@@ -32,7 +32,7 @@ Body/JSON:
 ## 3. GigabitEthernet 0/0/0 IP címzésének lekérdezése
 ```console
 GET
-https://192.168.1.1/restconf/data/ietf-interfaces:interfaces/interface=GigabitEthernet0/0/0
+https://192.168.1.1/restconf/data/ietf-interfaces:interfaces/interface=GigabitEthernet0%2F0%2F0
 Auth/Basic/Username: "admin"
 Auth/Basic/Password: "cisco123!"
 Headers/Content-Type: "application/yang-data+json"
@@ -42,7 +42,7 @@ Headers/Accept: "application/yang-data+json"
 ## 4. GigabitEthernet 0/0/0 felkapcsolási állapotának lekérdezése
 ```console
 GET
-https://192.168.1.1/restconf/data/ietf-interfaces:interfaces-state/interface=GigabitEthernet0/0/0
+https://192.168.1.1/restconf/data/ietf-interfaces:interfaces-state/interface=GigabitEthernet0%2F0%2F0
 Auth/Basic/Username: "admin"
 Auth/Basic/Password: "cisco123!"
 Headers/Content-Type: "application/yang-data+json"
@@ -96,7 +96,7 @@ Body/JSON:
 {
     "Cisco-IOS-XE-native:banner": {
         "login": {
-            "banner": "Welcome to the router!"
+            "banner": "#Welcome to the router!#"
         }
     }
 }
