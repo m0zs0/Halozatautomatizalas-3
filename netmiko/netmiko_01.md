@@ -173,8 +173,11 @@ finally blokk: Ebben a blokkban olyan műveleteket helyezünk el, amelyek minden
 A retry mechanizmus célja, hogy a hálózati műveletek során fellépő hibák esetén újrapróbálkozásokat végezzen. Ez különösen hasznos lehet olyan helyzetekben, amikor a hálózati kapcsolat instabil, vagy időnként előfordulhatnak hitelesítési hibák. A mechanizmus a következőképpen működik:
 
 Újrapróbálkozások száma: Meghatározhatod, hogy hány alkalommal próbálkozzon újra a kód, mielőtt végleg feladná. Ezt a max_retries paraméterrel állíthatod be.
+
 Késleltetés: Az újrapróbálkozások között eltelt időt a delay paraméterrel szabályozhatod. Ez lehetőséget ad a hálózatnak, hogy helyreálljon, mielőtt újra próbálkozna.
+
 Hibakezelés: A kód különböző típusú hibákat kezel, mint például hitelesítési hibák (NetmikoAuthenticationException), időtúllépés (NetmikoTimeoutException), és fájlírási hibák (IOError, OSError). Ha hiba történik, a kód naplózza a hibát, vár egy meghatározott időt, majd újrapróbálkozik.
+
 Ez a mechanizmus biztosítja, hogy a kód ne adja fel azonnal, ha egy hiba történik, hanem többször is megpróbálja végrehajtani a műveletet, növelve ezzel a siker esélyét.
 
 ```py
