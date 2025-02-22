@@ -230,13 +230,42 @@ def get_running_config(device_dict, filename):
     logging.basicConfig(filename='netmiko_script.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
     try:
-        # ... (a többi kód a fenti példákból)
-    except (NetmikoAuthenticationException, NetmikoTimeoutException, IOError, OSError) as e:
-        logging.error(f"Hiba történt: {e}")
-    finally:
-        # ... (a többi kód a fenti példákból)
+        # Csatlakozás az eszközhöz
+        net_connect = ConnectHandler(**device_dict)
+        logging.info("Sikeres csatlakozás az eszközhöz")
 
-# ... (a többi kód a fenti példákból)
+        # Parancs küldése és az eredmény mentése
+        output = net_connect.send_command("show running-config")
+        with open(filename, 'w') as f:
+            f.write(output)
+        logging.info(f"A konfiguráció sikeresen mentve lett: {filename}")
+
+    except NetmikoAuthenticationException as e:
+        logging.error(f"Hiba a hitelesítés során: {e}")
+    except NetmikoTimeoutException as e:
+        logging.error(f"A kapcsolat időtúllépés miatt megszakadt: {e}")
+    except (IOError, OSError) as e:
+        logging.error(f"Hiba a fájlba írás során: {e}")
+    finally:
+        try:
+            net_connect.disconnect()
+            logging.info("Kapcsolat bontva")
+        except NameError:
+            logging.warning("A kapcsolat nem jött létre, így nem lehetett bontani")
+
+# Eszköz adatok
+device = {
+    'host': '192.168.1.1',
+    'username': 'cisco',
+    'password': 'cisco',
+    'device_type': 'cisco_ios'
+}
+
+# Fájl neve
+filename = 'running_config.txt'
+
+# Hívjuk a függvényt
+get_running_config(device, filename)
 
 ```
 
