@@ -76,6 +76,25 @@ net_connect.send_config_set(['end'])
 net_connect.disconnect()
 ```
 
+**6-os feladathoz**
+További példák:
+
+VLAN konfiguráció: include="vlan"
+
+IP routing konfiguráció: include="ip route"
+
+NTP konfiguráció: include="ntp"
+
+Többszörös feltétel:
+
+output = net_connect.send_command("show running-config", include=("GigabitEthernet0/1", "vlan 10"))
+
+Példa kivétellel:
+
+output = net_connect.send_command("show running-config", include="vlan", exclude="vlan 10")
+
+
+
 4. lépés: Hozd létre a start.txt állományt is
 ```console
 hostname ROUTER_1
@@ -86,4 +105,137 @@ no shutdown
 
 5. lépés:	Futtatsd le a py kódot
 6. lépés: Ellenőrízd a Routeren, hogy megtörténtek-e a beállítások
+
+## II. Hibakezelés
+```py
+from netmiko import ConnectHandler, NetmikoAuthenticationException, NetmikoTimeoutException
+
+def get_running_config(device_dict, filename):
+    try:
+        net_connect = ConnectHandler(**device_dict)
+        output = net_connect.send_command("show running-config")
+
+        with open(filename, 'w') as f:
+            f.write(output)
+
+        print(f"A konfiguráció sikeresen mentve lett: {filename}")
+    except NetmikoAuthenticationException as e:
+        print(f"Hiba a hitelesítés során: {e}")
+    except NetmikoTimeoutException as e:
+        print(f"A kapcsolat időtúllépés miatt megszakadt: {e}")
+    except (IOError, OSError) as e:
+        print(f"Hiba a fájlba írás során: {e}")
+    finally:
+        # A kapcsolat bontása, még ha hiba történt is
+        net_connect.disconnect()
+
+# Eszköz adatok
+device = {
+    'host': '192.168.1.1',
+    'username': 'cisco',
+    'password': 'cisco',
+    'device_type': 'cisco_ios'
+}
+
+# Fájl neve
+filename = 'running_config.txt'
+
+get_running_config(device, filename)
+```
+
+Függvény: A kód egy függvényt definiál, amely a hálózati eszköz adatait és a fájl nevét paraméterként fogadja.
+
+try blokk: Ebben a blokkban helyezkednek el a hálózati műveletek.
+
+except blokkok: A különböző típusú hibákra külön except blokkokat definiálunk.
+
+NetmikoAuthenticationException: Ha a hitelesítés sikertelen.
+
+NetmikoTimeoutException: Ha a kapcsolat időtúllépés miatt megszakad.
+
+IOError és OSError: Ha a fájlba írás során hiba történik.
+
+finally blokk: Ebben a blokkban olyan műveleteket helyezünk el, amelyek mindenképpen végrehajtódnak, függetlenül attól, hogy hiba történt-e vagy sem (például a kapcsolat bontása).
+
+
+## III. Retry mechanizmus
+
+```py
+from netmiko import ConnectHandler, NetmikoAuthenticationException, NetmikoTimeoutException
+import time
+
+def get_running_config(device_dict, filename, max_retries=3, delay=5):
+    retries = 0
+    while retries < max_retries:
+        try:
+            net_connect = ConnectHandler(**device_dict)
+            output = net_connect.send_command("show running-config")
+
+            with open(filename, 'w') as f:
+                f.write(output)
+
+            print(f"A konfiguráció sikeresen mentve lett: {filename}")
+            return  # Ha sikeres volt, kilépünk a ciklusból
+
+        except (NetmikoAuthenticationException, NetmikoTimeoutException, IOError, OSError) as e:
+            print(f"Hiba történt: {e}. Újrapróbálkozás {retries+1}/{max_retries}...")
+            retries += 1
+            time.sleep(delay)
+
+    print("A maximális újrapróbálkozás száma elérve.")
+
+# Eszköz adatok
+device = {
+    'host': '192.168.1.1',
+    'username': 'cisco',
+    'password': 'cisco',
+    'device_type': 'cisco_ios'
+}
+
+# Fájl neve
+filename = 'running_config.txt'
+
+# Hívjuk a függvényt
+get_running_config(device, filename)
+```
+
+## IV. Naplózás a logging modul használatával
+
+```py
+import logging
+from netmiko import ConnectHandler, NetmikoAuthenticationException, NetmikoTimeoutException
+
+def get_running_config(device_dict, filename):
+    # Konfiguráljuk a logger-t
+    logging.basicConfig(filename='netmiko_script.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+    try:
+        # ... (a többi kód a fenti példákból)
+    except (NetmikoAuthenticationException, NetmikoTimeoutException, IOError, OSError) as e:
+        logging.error(f"Hiba történt: {e}")
+    finally:
+        # ... (a többi kód a fenti példákból)
+
+# ... (a többi kód a fenti példákból)
+
+```
+
+logging.basicConfig: Ezzel a függvénnyel konfiguráljuk a logger-t.
+
+filename: A naplófájl neve.
+
+level: A naplózás szintje. DEBUG a leg részletesebb, INFO, WARNING, ERROR és CRITICAL a többi szint.
+
+format: A naplóüzenetek formátuma.
+
+logging.error: A hibaüzeneteket a logging.error függvénnyel írjuk a naplófájlba.
+
+
+A naplófájl tartalma egy tipikus hiba esetén:
+
+2023-11-22 14:30:00,123 - ERROR - Hiba történt: Authentication failed: [Errno 2] No such file or directory
+
+
+
+
 
