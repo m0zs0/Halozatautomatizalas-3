@@ -1,5 +1,51 @@
 # Netmiko használata - Laborgyakorlat
 
+A hálózati automatizálás egyre nagyobb szerepet játszik az IT infrastruktúrák kezelésében. Azonban a hatékony és megbízható automatizáláshoz fontos bizonyos alapelveket és gyakorlatokat követni.
+
+- Átfogó tervezés és moduláris felépítés
+- Világos célok: Határozzuk meg pontosan, hogy mit szeretnénk automatizálni, és milyen problémákat oldunk meg vele.
+- Moduláris felépítés: Bontsuk fel az automatizálási feladatokat kisebb, önállóan tesztelhető modulokra.
+- Verziókövetés: Használjunk verziókövető rendszert (pl. Git), hogy nyomon követhessük a változásokat és könnyebben visszaállíthassuk a korábbi állapotokat.
+
+Konfigurációkezelés: Hogyan töltünk fel konfigurációs fájlokat, hogyan módosítunk konfigurációs paramétereket?
+
+- YAML vagy JSON: Használjunk emberi olvasható formátumú konfigurációs fájlokat (YAML, JSON).
+- Változók használata: Paraméterezhetővé tegyük a konfigurációkat változók segítségével.
+- Template-ek: Alkalmazzunk templating motorokat (pl. Jinja2) dinamikus konfigurációk generálásához.
+
+Tesztelés és hibakezelés
+
+- Unit tesztek: Írjunk unit teszteket az egyes modulokhoz, hogy biztosítsuk azok helyes működését.
+- Integrációs tesztek: Végezzünk integrációs teszteket, hogy ellenőrizzük, hogy a modulok együttesen is jól működnek.
+- Hibakezelés: Implementáljunk megfelelő hibakezelési mechanizmusokat, hogy a hibák ne okozzanak váratlan leállásokat.
+- Logolás: Rögzítsük az automatizálás során keletkező eseményeket és hibákat log fájlokban.
+
+Biztonság
+
+- Hozzáférés-vezérlés: Korlátozzuk az automatizálási szkriptek hozzáférését a hálózati eszközökhöz.
+- Titkosítás: Tároljuk biztonságosan a jelszavakat és egyéb érzékeny adatokat.
+- Input validáció: Ellenőrizzük az automatizálási szkriptekbe bevitt adatokat, hogy elkerüljük a rosszindulatú kódok végrehajtását.
+
+Dokumentáció
+
+- Részletes dokumentáció: Készítsünk részletes dokumentációt az automatizálási folyamatokról, hogy más fejlesztők is könnyen megértsék és továbbfejleszthessék azokat.
+- Kommentek: Használjunk kommenteket a kódban, hogy megmagyarázzuk a bonyolultabb részeket.
+
+Eszközök és technológiák
+
+- Ansible: Egy egyszerű és hatékony eszköz hálózati automatizáláshoz.
+- Netmiko: Python könyvtár hálózati eszközökkel való kommunikációhoz.
+- Paramiko: Python könyvtár SSH protokoll használatához.
+- Nagios: Hálózati monitorozó eszköz.
+
+Best practices: Milyen jó gyakorlatokat érdemes követni a hálózatautomatizálás során?
+
+- Kezdj kicsiben: Ne akarjunk mindent egyszerre automatizálni. Kezdjünk egy egyszerű feladattal, majd fokozatosan bővítsük az automatizálási környezetet.
+- Ismételhetőség: Az automatizálási folyamatoknak reprodukálhatónak kell lenniük.
+- Folyamatos fejlesztés: Az automatizálási rendszereket folyamatosan fejleszteni kell, hogy lépést tartsanak a változó követelményekkel.
+- Összefoglalva: A hálózati automatizálás hatékony és megbízható végrehajtásához fontos a tervezés, a moduláris felépítés, a tesztelés, a biztonság és a dokumentáció. A megfelelő eszközök és technológiák kiválasztásával jelentősen egyszerűsíthetjük az automatizálási feladatokat.
+
+
 
 ## I. Csatlakozás több eszközhöz egymás után (sorosan)
 
@@ -352,41 +398,4 @@ for router in data['routers']:
         print(output)
 ```
 
-
-•  Konfigurációk kezelése: Hogyan töltünk fel konfigurációs fájlokat, hogyan módosítunk konfigurációs paramétereket?
-•  Kimenetek elemzése: Hogyan elemezzük a kapott kimeneteket, hogyan vonunk le következtetéseket az adatokból?
-•  Best practices: Milyen jó gyakorlatokat érdemes követni a hálózatautomatizálás során?
-
-A hálózati automatizálás egyre nagyobb szerepet játszik az IT infrastruktúrák kezelésében. Azonban a hatékony és megbízható automatizáláshoz fontos bizonyos alapelveket és gyakorlatokat követni.
-
-Átfogó tervezés és moduláris felépítés
-Világos célok: Határozzuk meg pontosan, hogy mit szeretnénk automatizálni, és milyen problémákat oldunk meg vele.
-Moduláris felépítés: Bontsuk fel az automatizálási feladatokat kisebb, önállóan tesztelhető modulokra.
-Verziókövetés: Használjunk verziókövető rendszert (pl. Git), hogy nyomon követhessük a változásokat és könnyebben visszaállíthassuk a korábbi állapotokat.
-Konfigurációkezelés
-YAML vagy JSON: Használjunk emberi olvasható formátumú konfigurációs fájlokat (YAML, JSON).
-Változók használata: Paraméterezhetővé tegyük a konfigurációkat változók segítségével.
-Templátok: Alkalmazzunk templating motorokat (pl. Jinja2) dinamikus konfigurációk generálásához.
-Tesztelés és hibakezelés
-Unit tesztek: Írjunk unit teszteket az egyes modulokhoz, hogy biztosítsuk azok helyes működését.
-Integrációs tesztek: Végezzünk integrációs teszteket, hogy ellenőrizzük, hogy a modulok együttesen is jól működnek.
-Hibakezelés: Implementáljunk megfelelő hibakezelési mechanizmusokat, hogy a hibák ne okozzanak váratlan leállásokat.
-Logolás: Rögzítsük az automatizálás során keletkező eseményeket és hibákat log fájlokban.
-Biztonság
-Hozzáférés-vezérlés: Korlátozzuk az automatizálási szkriptek hozzáférését a hálózati eszközökhöz.
-Titkosítás: Tároljuk biztonságosan a jelszavakat és egyéb érzékeny adatokat.
-Input validáció: Ellenőrizzük az automatizálási szkriptekbe bevitt adatokat, hogy elkerüljük a rosszindulatú kódok végrehajtását.
-Dokumentáció
-Részletes dokumentáció: Készítsünk részletes dokumentációt az automatizálási folyamatokról, hogy más fejlesztők is könnyen megértsék és továbbfejleszthessék azokat.
-Kommentek: Használjunk kommenteket a kódban, hogy megmagyarázzuk a bonyolultabb részeket.
-Eszközök és technológiák
-Ansible: Egy egyszerű és hatékony eszköz hálózati automatizáláshoz.
-Netmiko: Python könyvtár hálózati eszközökkel való kommunikációhoz.
-Paramiko: Python könyvtár SSH protokoll használatához.
-Nagios: Hálózati monitorozó eszköz.
-További tippek
-Kezdj kicsiben: Ne akarjunk mindent egyszerre automatizálni. Kezdjünk egy egyszerű feladattal, majd fokozatosan bővítsük az automatizálási környezetet.
-Ismételhetőség: Az automatizálási folyamatoknak reprodukálhatónak kell lenniük.
-Folyamatos fejlesztés: Az automatizálási rendszereket folyamatosan fejleszteni kell, hogy lépést tartsanak a változó követelményekkel.
-Összefoglalva: A hálózati automatizálás hatékony és megbízható végrehajtásához fontos a tervezés, a moduláris felépítés, a tesztelés, a biztonság és a dokumentáció. A megfelelő eszközök és technológiák kiválasztásával jelentősen egyszerűsíthetjük az automatizálási feladatokat.
 
