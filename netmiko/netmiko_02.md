@@ -203,7 +203,37 @@ new_config = net_connect.send_command('show running-config')
 
 ```
 
-## VIII. A kapott kimenetek feldolgozása reguláris kifejezések segítségével
+## VIII. VTP jelszó egységes beállítása
+```py
+from netmiko import ConnectHandler
+vtpass = input("VTP jelszo: ")
+s
+1 = {'device_type': 'cisco_ios','host': '172.20.10.121','username':
+'admin','password': 'cisco'
+s2 = {'device_type': 'cisco_ios','host': '172.20.10.122','username':
+'admin','password': 'cisco'
+s
+3 = {'device_type': 'cisco_ios','host': '172.20.10.12 3 ','username':
+'admin','password': 'cisco'
+switchlist = [s
+1 , s 2,s3
+for switch in switchlist:
+k = ConnectHandler(**switch)
+print(switch["host"]," VTP jelszava:")
+output = k.send_command("show vtp password")
+print(output)
+line = output.split()
+if line[2] != vtpass:
+o1 = k.send_config_set(['vtp password ' + vtpass])
+print(o1)
+k.disconnect()
+```
+
+
+
+
+
+## IX. A kapott kimenetek feldolgozása reguláris kifejezések segítségével
 
 IP cím kinyerése egy show ip interface brief parancs kimenetéből
 ```py
