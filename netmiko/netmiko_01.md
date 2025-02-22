@@ -64,7 +64,7 @@ net_connect.send_config_set(["hostname ROUTER2", "banner motd #Entry is allowed 
 ```
 ### 3. egy parancs küldése és az eredmény kiíratása
 ```py
-#print(net_connect.send_command("show ip int brief"))
+print(net_connect.send_command("show ip int brief"))
 ```
 ### 4. egy parancs küldése és az eredmény elmentése
 ```py
