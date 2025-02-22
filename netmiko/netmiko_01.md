@@ -27,7 +27,7 @@ interface FastEthernet0/0
 ip address 192.168.1.1 255.255.255.0
 no shutdown
 ```
-3. lépés: hozd létre a sendconf.py állományt:
+3. lépés: hozd létre a main.py állományt:
 ```py
 from netmiko import ConnectHandler
 
@@ -44,31 +44,8 @@ device = {
 net_connect = ConnectHandler(**device)
 net_connect.enable()
 
-#1. egy parancs küldése
-net_connect.send_config_set(["hostname ROUTER2"])
-
-#2. több parancs küldése
-net_connect.send_config_set(["hostname ROUTER2", "banner motd #Entry is allowed from 8:00 to 16:00."])
-
-#3. egy parancs küldése és az eredmény kiíratása
-#print(net_connect.send_command("show ip int brief"))
-
-#4. egy parancs küldése és az eredmény elmentése
-output = net_connect.send_command("show running-config")
-with open('running_config.txt', 'w') as f:
-    f.write(output)
-
-#5. parancsok küldése fájlból
-with open('start.txt', 'r') as f:
-    config_commands = f.readlines()
-net_connect.send_config_set(config_commands)
-
-#6. Csak a GigabitEthernet0/1 kifejezésre illeszkedő sorokat kérjük le
-output = net_connect.send_command("show running-config", include="GigabitEthernet0/1")
-with open('interface_config.txt', 'w') as f:
-    f.write(output)
-
-
+# ide jönnek a példakódok
+#...
 # Végződés
 net_connect.send_config_set(['end'])
 
@@ -76,7 +53,46 @@ net_connect.send_config_set(['end'])
 net_connect.disconnect()
 ```
 
-**6-os feladathoz**
+### 1. egy parancs küldése
+```py
+net_connect.send_config_set(["hostname ROUTER2"])
+```
+###2. több parancs küldése
+```py
+net_connect.send_config_set(["hostname ROUTER2", "banner motd #Entry is allowed from 8:00 to 16:00."])
+```
+###3. egy parancs küldése és az eredmény kiíratása
+```py
+#print(net_connect.send_command("show ip int brief"))
+```
+###4. egy parancs küldése és az eredmény elmentése
+```py
+output = net_connect.send_command("show running-config")
+with open('running_config.txt', 'w') as f:
+    f.write(output)
+```
+###5. parancsok küldése fájlból
+
+Hozd létre a start.txt állományt is
+```console
+hostname ROUTER_1
+interface FastEthernet0/1
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+```
+
+
+```py
+with open('start.txt', 'r') as f:
+    config_commands = f.readlines()
+net_connect.send_config_set(config_commands)
+```
+###6. Csak a GigabitEthernet0/1 kifejezésre illeszkedő sorokat kérjük le
+```py
+output = net_connect.send_command("show running-config", include="GigabitEthernet0/1")
+with open('interface_config.txt', 'w') as f:
+    f.write(output)
+```
 További példák:
 
 VLAN konfiguráció: include="vlan"
@@ -95,13 +111,6 @@ output = net_connect.send_command("show running-config", include="vlan", exclude
 
 
 
-4. lépés: Hozd létre a start.txt állományt is
-```console
-hostname ROUTER_1
-interface FastEthernet0/1
-ip address 192.168.2.1 255.255.255.0
-no shutdown
-```
 
 5. lépés:	Futtatsd le a py kódot
 6. lépés: Ellenőrízd a Routeren, hogy megtörténtek-e a beállítások
