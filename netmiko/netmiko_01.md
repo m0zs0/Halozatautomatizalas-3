@@ -42,13 +42,15 @@ device = {
 
 # Csatlakozás
 net_connect = ConnectHandler(**device)
-
-#print(net_connect.send_command("show ip int brief"))
 net_connect.enable()
 
+#1. egy parancs küldése
 net_connect.send_config_set(["hostname ROUTER2"])
 
-# A start.txt fájl tartalmának beolvasása
+#2. egy parancs küldése és az eredmény kiíratása
+#print(net_connect.send_command("show ip int brief"))
+
+#3. A start.txt fájl tartalmának beolvasása
 with open('start.txt', 'r') as f:
     config_commands = f.readlines()
 
