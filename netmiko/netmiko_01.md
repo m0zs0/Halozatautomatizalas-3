@@ -63,6 +63,12 @@ with open('start.txt', 'r') as f:
     config_commands = f.readlines()
 net_connect.send_config_set(config_commands)
 
+#6. Csak a GigabitEthernet0/1 kifejezésre illeszkedő sorokat kérjük le
+output = net_connect.send_command("show running-config", include="GigabitEthernet0/1")
+with open('interface_config.txt', 'w') as f:
+    f.write(output)
+
+
 # Végződés
 net_connect.send_config_set(['end'])
 
@@ -70,7 +76,7 @@ net_connect.send_config_set(['end'])
 net_connect.disconnect()
 ```
 
-4. lépés: Hozd létre a sendconf.txt állományt is
+4. lépés: Hozd létre a start.txt állományt is
 ```console
 hostname ROUTER_1
 interface FastEthernet0/1
