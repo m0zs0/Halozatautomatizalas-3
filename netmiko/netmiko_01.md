@@ -44,8 +44,9 @@ device = {
 net_connect = ConnectHandler(**device)
 net_connect.enable()
 
-# ide jönnek a példakódok
+# ide jönnek a példakódok 1-6-ig
 #...
+
 # Végződés
 net_connect.send_config_set(['end'])
 
@@ -57,21 +58,21 @@ net_connect.disconnect()
 ```py
 net_connect.send_config_set(["hostname ROUTER2"])
 ```
-###2. több parancs küldése
+### 2. több parancs küldése
 ```py
 net_connect.send_config_set(["hostname ROUTER2", "banner motd #Entry is allowed from 8:00 to 16:00."])
 ```
-###3. egy parancs küldése és az eredmény kiíratása
+### 3. egy parancs küldése és az eredmény kiíratása
 ```py
 #print(net_connect.send_command("show ip int brief"))
 ```
-###4. egy parancs küldése és az eredmény elmentése
+### 4. egy parancs küldése és az eredmény elmentése
 ```py
 output = net_connect.send_command("show running-config")
 with open('running_config.txt', 'w') as f:
     f.write(output)
 ```
-###5. parancsok küldése fájlból
+### 5. parancsok küldése fájlból
 
 Hozd létre a start.txt állományt is
 ```console
@@ -87,7 +88,7 @@ with open('start.txt', 'r') as f:
     config_commands = f.readlines()
 net_connect.send_config_set(config_commands)
 ```
-###6. Csak a GigabitEthernet0/1 kifejezésre illeszkedő sorokat kérjük le
+### 6. Csak a GigabitEthernet0/1 kifejezésre illeszkedő sorokat kérjük le
 ```py
 output = net_connect.send_command("show running-config", include="GigabitEthernet0/1")
 with open('interface_config.txt', 'w') as f:
