@@ -47,14 +47,20 @@ net_connect.enable()
 #1. egy parancs küldése
 net_connect.send_config_set(["hostname ROUTER2"])
 
-#2. egy parancs küldése és az eredmény kiíratása
+#2. több parancs küldése
+net_connect.send_config_set(["hostname ROUTER2", "banner motd #Entry is allowed from 8:00 to 16:00."])
+
+#3. egy parancs küldése és az eredmény kiíratása
 #print(net_connect.send_command("show ip int brief"))
 
-#3. A start.txt fájl tartalmának beolvasása
+#4. egy parancs küldése és az eredmény elmentése
+output = net_connect.send_command("show running-config")
+with open('running_config.txt', 'w') as f:
+    f.write(output)
+
+#5. parancsok küldése fájlból
 with open('start.txt', 'r') as f:
     config_commands = f.readlines()
-
-# Konfiguráció küldése
 net_connect.send_config_set(config_commands)
 
 # Végződés
