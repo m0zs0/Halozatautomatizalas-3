@@ -1,5 +1,9 @@
 # Netmiko használata - Laborgyakorlat
 
+A Netmiko egy Python könyvtár, amely megkönnyíti a hálózati eszközökhöz való SSH kapcsolatok kezelését. A Netmiko a Paramiko SSH könyvtárra épül, és célja, hogy egyszerűsítse a CLI (Command Line Interface) kapcsolatok kezelését különböző gyártók eszközeivel.
+
+A Netmiko segítségével könnyedén végrehajthatunk parancsokat és konfigurációs változtatásokat hálózati eszközökön.
+
 
 ## I. Teszt
 
