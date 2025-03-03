@@ -141,6 +141,8 @@ from netmiko import ConnectHandler, NetmikoAuthenticationException, NetmikoTimeo
 def get_running_config(device_dict, filename):
     try:
         net_connect = ConnectHandler(**device_dict)
+        net_connect.enable()
+        
         output = net_connect.send_command("show running-config")
 
         with open(filename, 'w') as f:
@@ -160,8 +162,9 @@ def get_running_config(device_dict, filename):
 # Eszköz adatok
 device = {
     'host': '192.168.1.1',
-    'username': 'cisco',
-    'password': 'cisco',
+    'username': 'admin',
+    'password': 'admin',
+    'secret': 'cisco',
     'device_type': 'cisco_ios'
 }
 
