@@ -49,6 +49,8 @@ Best practices: Milyen jó gyakorlatokat érdemes követni a hálózatautomatiz�
 
 ## I. Csatlakozás több eszközhöz egymás után (sorosan)
 
+![netmiko](../PICTURES/netmiko.png)
+
 ```py
 from netmiko import ConnectHandler
 
