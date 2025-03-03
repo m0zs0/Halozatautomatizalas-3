@@ -105,6 +105,12 @@ output = net_connect.send_command("show running-config", include="GigabitEtherne
 with open('interface_config.txt', 'w') as f:
     f.write(output)
 ```
+
+```py ez nem működik
+output = net_connect.send_command("show running-config", include="GigabitEthernet0/1")
+with open('interface_config.txt', 'w') as f:
+    f.write(output)
+```
 További példák:
 
 VLAN konfiguráció: include="vlan"
