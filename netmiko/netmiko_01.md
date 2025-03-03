@@ -237,7 +237,7 @@ device = {
 }
 
 # Fájl neve
-filename = 'running_config_2.txt'
+filename = 'running_config.txt'
 
 # Hívjuk a függvényt
 get_running_config(device, filename)
@@ -258,6 +258,8 @@ def get_running_config(device_dict, filename):
     try:
         # Csatlakozás az eszközhöz
         net_connect = ConnectHandler(**device_dict)
+        net_connect.enable()
+
         logging.info("Sikeres csatlakozás az eszközhöz")
 
         # Parancs küldése és az eredmény mentése
@@ -282,8 +284,9 @@ def get_running_config(device_dict, filename):
 # Eszköz adatok
 device = {
     'host': '192.168.1.1',
-    'username': 'cisco',
-    'password': 'cisco',
+    'username': 'admin',
+    'password': 'admin',
+    'secret': 'cisco',
     'device_type': 'cisco_ios'
 }
 
@@ -292,6 +295,8 @@ filename = 'running_config.txt'
 
 # Hívjuk a függvényt
 get_running_config(device, filename)
+
+#teszteléshez a 'password': 'admin1'-et kell beírni!
 
 ```
 
