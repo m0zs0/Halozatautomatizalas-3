@@ -64,7 +64,7 @@ net_connect.send_config_set(["hostname ROUTER2"])
 ```
 ### 2. több parancs küldése
 ```py
-net_connect.send_config_set(["hostname ROUTER2", "banner motd #Entry is allowed from 8:00 to 16:00."])
+net_connect.send_config_set(["hostname ROUTER2", "banner motd #Entry is allowed from 8:00 to 16:00.#"])
 ```
 ### 3. egy parancs küldése és az eredmény kiíratása
 ```py
