@@ -76,8 +76,15 @@ output = net_connect.send_command("show running-config")
 with open('running_config.txt', 'w') as f:
     f.write(output)
 ```
-### 5. parancsok küldése fájlból
 
+### 5. egy parancs küldése és az eredmény elmentése
+```py
+output = net_connect.send_command("show running-config | section interface")
+with open('interfaces_config.txt', 'w') as f:
+    f.write(output)
+```
+
+### 6. parancsok küldése fájlból
 Hozd létre a start.txt állományt is
 ```console
 hostname ROUTER_1
@@ -92,7 +99,7 @@ with open('start.txt', 'r') as f:
     config_commands = f.readlines()
 net_connect.send_config_set(config_commands)
 ```
-### 6. Csak a GigabitEthernet0/1 kifejezésre illeszkedő sorokat kérjük le
+### 7. Csak a GigabitEthernet0/1 kifejezésre illeszkedő sorokat kérjük le
 ```py
 output = net_connect.send_command("show running-config", include="GigabitEthernet0/1")
 with open('interface_config.txt', 'w') as f:
