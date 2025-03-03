@@ -101,12 +101,13 @@ net_connect.send_config_set(config_commands)
 ```
 ### 7. Csak a GigabitEthernet0/1 kifejezésre illeszkedő sorokat kérjük le
 ```py
-output = net_connect.send_command("show running-config", include="GigabitEthernet0/1")
+output = net_connect.send_command("show running-config | section GigabitEthernet0/1")
 with open('interface_config.txt', 'w') as f:
     f.write(output)
 ```
 
-```py ez nem működik
+ez nem működik
+```py
 output = net_connect.send_command("show running-config", include="GigabitEthernet0/1")
 with open('interface_config.txt', 'w') as f:
     f.write(output)
