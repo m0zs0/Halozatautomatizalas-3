@@ -64,7 +64,7 @@ net_connect.send_config_set(["hostname ROUTER2"])
 ```
 ### 2. több parancs küldése
 ```py
-net_connect.send_config_set(["hostname ROUTER2", "banner motd #Entry is allowed from 8:00 to 16:00.#"])
+net_connect.send_config_set(["hostname ROUTER3", "banner motd #Entry is allowed from 8:00 to 16:00.#"])
 ```
 ### 3. egy parancs küldése és az eredmény kiíratása
 ```py
@@ -87,7 +87,7 @@ with open('interfaces_config.txt', 'w') as f:
 ### 6. parancsok küldése fájlból
 Hozd létre a start.txt állományt is
 ```console
-hostname ROUTER_1
+hostname ROUTER_4
 interface FastEthernet0/1
 ip address 192.168.2.1 255.255.255.0
 no shutdown
