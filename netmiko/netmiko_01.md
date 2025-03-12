@@ -397,7 +397,100 @@ for device in devices:
     get_running_config(device, filename)
 ```
 
+## V. Dinamikus konfigurációk Jinja2-vel
+
+![netmiko](../PICTURES/jinja.png)
+
+```console
+!R1 preconf
+hostname R1
+enable secret cisco
+ip domain-name moriczref.hu
+crypto key generate rsa 
+1024
+username admin privilege 15 secret password
+line vty 0 15
+  login local
+  transport input ssh
+interface Serial0/0
+  ip address 10.0.0.1 255.255.255.252
+  no shutdown
+interface GigabitEthernet0/0
+  ip address 192.168.1.1 255.255.255.0
+  no shutdown
 
 
+!R2 preconf
+hostname R2
+enable secret cisco
+ip domain-name moriczref.hu
+crypto key generate rsa
+1024
+username admin secret admin
+line vty 0 15
+login local
+transport input ssh
+
+interface Serial0/0
+  ip address 10.0.0.2 255.255.255.252
+  no shutdown
+!
+
+ip route 192.168.1.0 255.255.255.0 10.0.0.1
+```
+
+```py
+from netmiko import ConnectHandler
+from jinja2 import Template
+
+# Eszköz adatai
+devices = [
+    {
+        'device_type': 'cisco_ios',
+        'host': '192.168.1.1',
+        'username': 'admin',
+        'password': 'password',
+        'secret': 'cisco',
+    },
+    {
+        'device_type': 'cisco_ios',
+        'host': '10.0.0.2',
+        'username': 'admin',
+        'password': 'password',
+        'secret': 'cisco',
+    }
+]
+
+# Konfigurációs sablon
+template = Template("""
+interface GigabitEthernet0/{{ interface_number }}
+  ip address {{ ip_address }} 255.255.255.0
+  no shutdown
+""")
+
+# Változók
+variables_list = [
+    {'interface_number': '1', 'ip_address': '192.168.2.1'},
+    {'interface_number': '1', 'ip_address': '192.168.3.1'}
+]
+
+# Konfiguráció generálása és küldése
+for device, variables in zip(devices, variables_list):
+    config_commands = template.render(variables)
+    connection = ConnectHandler(**device)
+    connection.enable()
+    output = connection.send_config_set(config_commands.split('\n'))
+    print(output)
+    connection.disconnect()
+```
 
 
+for device, variables in zip(devices, variables_list):
+
+Egy iterációt hajt végre a devices és variables_list listákon, párosítva az azonos indexű elemeket.
+példa: 
+```
+devices = ['device1', 'device2']
+variables_list = ['variables1', 'variables2']
+# zip(devices, variables_list) eredménye: [('device1', 'variables1'), ('device2', 'variables2')]
+```
