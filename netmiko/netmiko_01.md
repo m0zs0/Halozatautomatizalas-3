@@ -494,3 +494,5 @@ devices = ['device1', 'device2']
 variables_list = ['variables1', 'variables2']
 # zip(devices, variables_list) eredménye: [('device1', 'variables1'), ('device2', 'variables2')]
 ```
+## VI. VTP jelszó egységes beállítása
+
