@@ -447,7 +447,7 @@ no shutdown
 
 ip route 192.168.1.0 255.255.255.0 192.168.2.1
 ```
-** Teszteljük le: ** Pc0-ról tracert 192.168.3.10 (-> A gigabit portokokn keresztül megy a forgalom)
+**Teszteljük le:** Pc0-ról tracert 192.168.3.10 (-> A gigabit portokokn keresztül megy a forgalom)
 
 Szeretnénk kiegészíteni egy tartalék útvonallal a 10.0.0.0/30-as hálózatba állított Serial0/1/0 portokon keresztül.
 
@@ -508,7 +508,7 @@ variables_list = ['variables1', 'variables2']
 # zip(devices, variables_list) eredménye: [('device1', 'variables1'), ('device2', 'variables2')]
 ```
 
-** Teszteljük le: ** R1 Gi0/1 portjából húzzuk ki a kábelt. Pc0-ról tracert 192.168.3.10 (-> A serial portokon keresztül megy a forgalom)
+**Teszteljük le:** R1 Gi0/1 portjából húzzuk ki a kábelt. Pc0-ról tracert 192.168.3.10 (-> A serial portokon keresztül megy a forgalom)
 
 ## VI. VTP jelszó egységes beállítása
 
