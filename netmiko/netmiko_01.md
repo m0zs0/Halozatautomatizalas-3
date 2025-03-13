@@ -408,17 +408,19 @@ enable secret cisco
 ip domain-name moriczref.hu
 crypto key generate rsa 
 1024
+ip ssh version 2
 username admin privilege 15 secret password
 line vty 0 15
   login local
   transport input ssh
-interface Serial0/0
-  ip address 10.0.0.1 255.255.255.252
-  no shutdown
 interface GigabitEthernet0/0
   ip address 192.168.1.1 255.255.255.0
   no shutdown
+interface GigabitEthernet0/1
+  ip address 192.168.2.1 255.255.255.0
+  no shutdown
 
+ip route 192.168.3.0 255.255.255.0 192.168.2.2
 
 !R2 preconf
 hostname R2
@@ -426,17 +428,19 @@ enable secret cisco
 ip domain-name moriczref.hu
 crypto key generate rsa
 1024
-username admin secret admin
+ip ssh version 2
+username admin privilege 15 secret password
 line vty 0 15
 login local
 transport input ssh
+interface GigbitEthernet0/0
+ip address 192.168.3.1 255.255.255.0
+no shutdown
+interface GigbitEthernet0/1
+ip address 192.168.2.2 255.255.255.0
+no shutdown
 
-interface Serial0/0
-  ip address 10.0.0.2 255.255.255.252
-  no shutdown
-!
-
-ip route 192.168.1.0 255.255.255.0 10.0.0.1
+ip route 192.168.1.0 255.255.255.0 192.168.2.1
 ```
 
 ```py
@@ -454,7 +458,7 @@ devices = [
     },
     {
         'device_type': 'cisco_ios',
-        'host': '10.0.0.2',
+        'host': '192.168.2.2',
         'username': 'admin',
         'password': 'password',
         'secret': 'cisco',
@@ -463,15 +467,15 @@ devices = [
 
 # Konfigurációs sablon
 template = Template("""
-interface GigabitEthernet0/{{ interface_number }}
-  ip address {{ ip_address }} 255.255.255.0
+interface {{ interface_id }}
+  ip address {{ ip_address }} 255.255.255.252
   no shutdown
 """)
 
 # Változók
 variables_list = [
-    {'interface_number': '1', 'ip_address': '192.168.2.1'},
-    {'interface_number': '1', 'ip_address': '192.168.3.1'}
+    {'interface_id': 'Serial0/1/0', 'ip_address': '10.0.0.1'},
+    {'interface_id': 'Serial0/1/0', 'ip_address': '10.0.0.2'} 
 ]
 
 # Konfiguráció generálása és küldése
