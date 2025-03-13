@@ -318,6 +318,8 @@ A naplófájl tartalma egy tipikus hiba esetén:
 
 ## IV. Csatlakozás több eszközhöz egymás után (sorosan)
 
+(a két routert Switch-en keresztül összekötve ment csak)
+
 ![netmiko](../PICTURES/netmiko.png)
 
 ```console
@@ -403,7 +405,7 @@ A template használatához telepíteni kell a jinja2 könyvtárat:
 ```pip install jinja2```
 
 Adott az alábbi hálózat. 
-
+(a két routert Switch-en keresztül összekötve ment csak)
 ![netmiko](../PICTURES/jinja.png)
 
 ```console
