@@ -399,6 +399,10 @@ for device in devices:
 
 ## V. Dinamikus konfigurációk Jinja2-vel
 
+A template használatához telepíteni kell a jinja2 könyvtárat: 
+```pip install jinja2```
+
+Adott az alábbi hálózat. Szeretnénk kiegészíteni egy tartalék útvonallal a 10.0.0.0/30-as hálózatba állított Serial0/1/0 portokon keresztül.
 ![netmiko](../PICTURES/jinja.png)
 
 ```console
@@ -467,6 +471,7 @@ devices = [
 
 # Konfigurációs sablon
 template = Template("""
+ip route {{destination_network}} 255.255.255.0 {{next_hop_ip}} 150
 interface {{ interface_id }}
   ip address {{ ip_address }} 255.255.255.252
   no shutdown
@@ -474,8 +479,8 @@ interface {{ interface_id }}
 
 # Változók
 variables_list = [
-    {'interface_id': 'Serial0/1/0', 'ip_address': '10.0.0.1'},
-    {'interface_id': 'Serial0/1/0', 'ip_address': '10.0.0.2'} 
+    {'destination_network': '192.168.3.0', 'next_hop_ip': '10.0.0.2', 'interface_id': 'Serial0/1/0', 'ip_address': '10.0.0.1'},
+    {'destination_network': '192.168.1.0', 'next_hop_ip': '10.0.0.1', 'interface_id': 'Serial0/1/0', 'ip_address': '10.0.0.2'} 
 ]
 
 # Konfiguráció generálása és küldése
