@@ -513,4 +513,11 @@ variables_list = ['variables1', 'variables2']
 **Teszteljük le:** R1 Gi0/1 portjából húzzuk ki a kábelt. Pc0-ról tracert 192.168.3.10 (-> A serial portokon keresztül megy a forgalom)
 
 ## VI. VTP jelszó egységes beállítása
+```
+Azonban a programnak lehet értelme olyan helyzetekben, ahol:
 
+Kezdeti konfiguráció: A switch-ek kezdeti konfigurációja során a jelszó beállítása még nem történt meg.
+Hibaelhárítás: Ellenőrizni kell, hogy a jelszó megfelelően propagálódott-e, és szükség esetén korrigálni.
+Biztonsági ellenőrzés: Rendszeresen ellenőrizni kell, hogy a jelszó nem változott-e meg véletlenül vagy szándékosan.
+Tehát bár a VTP server automatikusan propagálja a jelszót, a program hasznos lehet a kezdeti beállítások ellenőrzésére és biztosítására, hogy minden switch megfelelően konfigurált.
+```
