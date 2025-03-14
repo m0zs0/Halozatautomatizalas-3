@@ -1,53 +1,8 @@
-# Netmiko használata - Laborgyakorlat
+# Netmiko használata II. - Laborgyakorlat
 
-A hálózati automatizálás egyre nagyobb szerepet játszik az IT infrastruktúrák kezelésében. Azonban a hatékony és megbízható automatizáláshoz fontos bizonyos alapelveket és gyakorlatokat követni.
+## IV. Csatlakozás több eszközhöz egymás után (sorosan)
 
-- Átfogó tervezés és moduláris felépítés
-- Világos célok: Határozzuk meg pontosan, hogy mit szeretnénk automatizálni, és milyen problémákat oldunk meg vele.
-- Moduláris felépítés: Bontsuk fel az automatizálási feladatokat kisebb, önállóan tesztelhető modulokra.
-- Verziókövetés: Használjunk verziókövető rendszert (pl. Git), hogy nyomon követhessük a változásokat és könnyebben visszaállíthassuk a korábbi állapotokat.
-
-Konfigurációkezelés: Hogyan töltünk fel konfigurációs fájlokat, hogyan módosítunk konfigurációs paramétereket?
-
-- YAML vagy JSON: Használjunk emberi olvasható formátumú konfigurációs fájlokat (YAML, JSON).
-- Változók használata: Paraméterezhetővé tegyük a konfigurációkat változók segítségével.
-- Template-ek: Alkalmazzunk templating motorokat (pl. Jinja2) dinamikus konfigurációk generálásához.
-
-Tesztelés és hibakezelés
-
-- Unit tesztek: Írjunk unit teszteket az egyes modulokhoz, hogy biztosítsuk azok helyes működését.
-- Integrációs tesztek: Végezzünk integrációs teszteket, hogy ellenőrizzük, hogy a modulok együttesen is jól működnek.
-- Hibakezelés: Implementáljunk megfelelő hibakezelési mechanizmusokat, hogy a hibák ne okozzanak váratlan leállásokat.
-- Logolás: Rögzítsük az automatizálás során keletkező eseményeket és hibákat log fájlokban.
-
-Biztonság
-
-- Hozzáférés-vezérlés: Korlátozzuk az automatizálási szkriptek hozzáférését a hálózati eszközökhöz.
-- Titkosítás: Tároljuk biztonságosan a jelszavakat és egyéb érzékeny adatokat.
-- Input validáció: Ellenőrizzük az automatizálási szkriptekbe bevitt adatokat, hogy elkerüljük a rosszindulatú kódok végrehajtását.
-
-Dokumentáció
-
-- Részletes dokumentáció: Készítsünk részletes dokumentációt az automatizálási folyamatokról, hogy más fejlesztők is könnyen megértsék és továbbfejleszthessék azokat.
-- Kommentek: Használjunk kommenteket a kódban, hogy megmagyarázzuk a bonyolultabb részeket.
-
-Eszközök és technológiák
-
-- Ansible: Egy egyszerű és hatékony eszköz hálózati automatizáláshoz.
-- Netmiko: Python könyvtár hálózati eszközökkel való kommunikációhoz.
-- Paramiko: Python könyvtár SSH protokoll használatához.
-- Nagios: Hálózati monitorozó eszköz.
-
-Best practices: Milyen jó gyakorlatokat érdemes követni a hálózatautomatizálás során?
-
-- Kezdj kicsiben: Ne akarjunk mindent egyszerre automatizálni. Kezdjünk egy egyszerű feladattal, majd fokozatosan bővítsük az automatizálási környezetet.
-- Ismételhetőség: Az automatizálási folyamatoknak reprodukálhatónak kell lenniük.
-- Folyamatos fejlesztés: Az automatizálási rendszereket folyamatosan fejleszteni kell, hogy lépést tartsanak a változó követelményekkel.
-- Összefoglalva: A hálózati automatizálás hatékony és megbízható végrehajtásához fontos a tervezés, a moduláris felépítés, a tesztelés, a biztonság és a dokumentáció. A megfelelő eszközök és technológiák kiválasztásával jelentősen egyszerűsíthetjük az automatizálási feladatokat.
-
-
-
-## I. Csatlakozás több eszközhöz egymás után (sorosan)
+(a két routert Switch-en keresztül összekötve ment csak)
 
 ![netmiko](../PICTURES/netmiko.png)
 
@@ -128,365 +83,269 @@ for device in devices:
     get_running_config(device, filename)
 ```
 
-## II. Csatlakozás több eszközhöz egyszerre (párhuzamosan)
-
-```py
-from concurrent.futures import ThreadPoolExecutor
-from netmiko import ConnectHandler
-
-# ... (eszközök listája)
-
-def connect_device(device):
-    net_connect = ConnectHandler(**device)
-    output = net_connect.send_command('show version')
-    print(output)
-    net_connect.disconnect()
-
-with ThreadPoolExecutor(max_workers=5) as executor:
-    executor.map(connect_device, devices)
-
-```
-
-## III. Konfigurációs parancsok küldése
-```py
-from netmiko import ConnectHandler
-
-# ... (eszköz adatai)
-
-# Csatlakozás
-net_connect = ConnectHandler(**device)
-
-# Konfigurációs parancsok küldése
-config_commands = [
-    'interface GigabitEthernet0/1',
-    'ip address 192.168.2.1 255.255.255.0',
-    'no shutdown'
-]
-net_connect.send_config_set(config_commands)
-
-# Kapcsolat lezárása
-net_connect.disconnect()
-
-```
-
-## IV. Konfigurációs fájl feltöltése
-```py
-from netmiko import ConnectHandler
-
-# Eszköz adatai
-device = {
-    'host': '192.168.1.1',
-    'username': 'admin',
-    'password': 'password',
-    'device_type': 'cisco_ios'
-}
-
-# Csatlakozás
-net_connect = ConnectHandler(**device)
-
-# Konfigurációs fájl feltöltése
-net_connect.send_config_from_file('new_config.txt')
-
-# Kapcsolat lezárása
-net_connect.disconnect()
-
-```
-
 ## V. Dinamikus konfigurációk Jinja2-vel
+
+A template használatához telepíteni kell a jinja2 könyvtárat: 
+```pip install jinja2```
+
+Adott az alábbi hálózat. 
+
+![jinja](../PICTURES/jinja.png)
+
+```console
+!R1 preconf
+hostname R1
+enable secret cisco
+ip domain-name moriczref.hu
+crypto key generate rsa 
+1024
+ip ssh version 2
+username admin privilege 15 secret password
+line vty 0 15
+  login local
+  transport input ssh
+interface GigabitEthernet0/0
+  ip address 192.168.1.1 255.255.255.0
+  no shutdown
+interface GigabitEthernet0/1
+  ip address 192.168.2.1 255.255.255.0
+  no shutdown
+
+ip route 192.168.3.0 255.255.255.0 192.168.2.2
+
+!R2 preconf
+hostname R2
+enable secret cisco
+ip domain-name moriczref.hu
+crypto key generate rsa
+1024
+ip ssh version 2
+username admin privilege 15 secret password
+line vty 0 15
+login local
+transport input ssh
+interface GigbitEthernet0/0
+ip address 192.168.3.1 255.255.255.0
+no shutdown
+interface GigbitEthernet0/1
+ip address 192.168.2.2 255.255.255.0
+no shutdown
+
+ip route 192.168.1.0 255.255.255.0 192.168.2.1
+```
+**Teszteljük le:** Pc0-ról tracert 192.168.3.10 (-> A gigabit portokon keresztül megy a forgalom)
+
+Szeretnénk kiegészíteni egy tartalék útvonallal a 10.0.0.0/30-as hálózatba állított Serial0/1/0 portokon keresztül.
+
 ```py
 from netmiko import ConnectHandler
 from jinja2 import Template
 
 # Eszköz adatai
-device = {
-    # ...
-}
+devices = [
+    {
+        'device_type': 'cisco_ios',
+        'host': '192.168.1.1',
+        'username': 'admin',
+        'password': 'password',
+        'secret': 'cisco',
+    },
+    {
+        'device_type': 'cisco_ios',
+        'host': '192.168.2.2',
+        'username': 'admin',
+        'password': 'password',
+        'secret': 'cisco',
+    }
+]
 
 # Konfigurációs sablon
 template = Template("""
-interface GigabitEthernet0/{{ interface_number }}
-  ip address {{ ip_address }} 255.255.255.0
+ip route {{destination_network}} 255.255.255.0 {{next_hop_ip}} 150
+interface {{ interface_id }}
+  ip address {{ ip_address }} 255.255.255.252
   no shutdown
 """)
 
 # Változók
-variables = {
-    'interface_number': '1',
-    'ip_address': '192.168.2.1'
-}
-
-# Konfiguráció generálása
-config_commands = template.render(variables)
-
-# ... (csatlakozás és konfiguráció küldése)
-
-```
-Ha a konfigurációkban változó részeket szeretnél kezelni, a Jinja2 templating engine-t használhatod.
-
-## VI. save_config() metódus meghívásával elmentjük a futó konfigurációt az eszköz flash memóriájába
-```py
-from netmiko import ConnectHandler
-
-# Eszköz adatai
-device = {
-    'host': '192.168.1.1',
-    'username': 'admin',
-    'password': 'password',
-    'device_type': 'cisco_ios'
-}
-
-# Csatlakozás
-net_connect = ConnectHandler(**device)
-
-# Konfigurációs módosítások (ha szükségesek)
-# ...
-
-# Konfiguráció mentése
-net_connect.save_config()
-
-# Kapcsolat lezárása
-net_connect.disconnect()
-```
-
-## VII. Konfigurációk összehasonlítása
-```py
-# ... (csatlakozás és konfiguráció módosítása)
-
-# Régi konfiguráció lekérése
-old_config = net_connect.send_command('show running-config')
-
-# Új konfiguráció mentése és lekérése
-net_connect.save_config()
-new_config = net_connect.send_command('show running-config')
-
-# Összehasonlítás (pl. diff eszköz segítségével)
-# ...
-
-```
-
-## VIII. VTP jelszó egységes beállítása
-```py
-from netmiko import ConnectHandler
-vtpass = input("VTP jelszo: ")
-s
-1 = {'device_type': 'cisco_ios','host': '172.20.10.121','username':
-'admin','password': 'cisco'
-s2 = {'device_type': 'cisco_ios','host': '172.20.10.122','username':
-'admin','password': 'cisco'
-s
-3 = {'device_type': 'cisco_ios','host': '172.20.10.12 3 ','username':
-'admin','password': 'cisco'
-switchlist = [s
-1 , s 2,s3
-for switch in switchlist:
-k = ConnectHandler(**switch)
-print(switch["host"]," VTP jelszava:")
-output = k.send_command("show vtp password")
-print(output)
-line = output.split()
-if line[2] != vtpass:
-o1 = k.send_config_set(['vtp password ' + vtpass])
-print(o1)
-k.disconnect()
-```
-
-
-
-
-
-## IX. A kapott kimenetek feldolgozása reguláris kifejezések segítségével
-
-IP cím kinyerése egy show ip interface brief parancs kimenetéből
-```py
-import re
-from netmiko import ConnectHandler
-
-# Eszköz adatai
-device = {
-    # ...
-}
-
-# Csatlakozás
-net_connect = ConnectHandler(**device)
-
-# Parancs végrehajtása és kimenetet tárolása
-output = net_connect.send_command('show ip interface brief')
-
-# Reguláris kifejezés az IP címek keresésére
-ip_regex = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
-
-# IP címek kinyerése és kiíratása
-ip_addresses = re.findall(ip_regex, output)
-print(ip_addresses)
-
-#Interfész állapotának ellenőrzése:
-
-interface_status_regex = r"GigabitEthernet0/1\s+is\s+(\w+)"
-
-#Hibaüzenetek keresése:
-
-error_regex = r"Error: (\w+)"
-
-##Konfigurációs paraméterek értékének kinyerése:
-
-ip_address_regex = r"ip address (\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"
-
-
-```
-További lehetőségek:
-
-XML vagy JSON formátum: Egyes eszközök XML vagy JSON formátumban adják vissza a kimenetet. Ezekben az esetekben a megfelelő könyvtárakkal (pl. xml.etree.ElementTree, json) könnyebben elemezhetjük az adatokat.
-
-Hiba kezelés: Kivételek kezelése, hibaüzenetek kezelése.
-A Netmiko send_config_set metódusa valóban egy listát ad vissza, amelyben minden elem egy tuple. Ez a tuple két elemből áll:
-
-Parancs: A küldött konfigurációs parancs.
-Eredmény: Egy boolean érték, ami True, ha a parancs sikeresen végrehajtódott, vagy False, ha hiba történt.
-
-```py
-from netmiko import ConnectHandler
-
-# ... (eszköz adatai)
-
-# Csatlakozás
-net_connect = ConnectHandler(**device)
-
-# Konfigurációs parancsok
-config_commands = [
-    'interface GigabitEthernet0/1',
-    'ip address 192.168.2.1 255.255.255.0',
-    'no shutdown'
+variables_list = [
+    {'destination_network': '192.168.3.0', 'next_hop_ip': '10.0.0.2', 'interface_id': 'Serial0/1/0', 'ip_address': '10.0.0.1'},
+    {'destination_network': '192.168.1.0', 'next_hop_ip': '10.0.0.1', 'interface_id': 'Serial0/1/0', 'ip_address': '10.0.0.2'} 
 ]
 
-# Konfiguráció küldése és hiba kezelés
-result = net_connect.send_config_set(config_commands)
+# Konfiguráció generálása és küldése
+for device, variables in zip(devices, variables_list):
+    config_commands = template.render(variables)
+    connection = ConnectHandler(**device)
+    connection.enable()
+    output = connection.send_config_set(config_commands.split('\n'))
+    print(output)
+    connection.disconnect()
+```
 
-# Eredmények kiértékelése
-for command, success in result:
-    if not success:
-        print(f"A következő parancs végrehajtása sikertelen volt: {command}")
 
-# Kapcsolat lezárása
-net_connect.disconnect()
+for device, variables in zip(devices, variables_list):
+
+Egy iterációt hajt végre a devices és variables_list listákon, párosítva az azonos indexű elemeket.
+példa: 
+```
+devices = ['device1', 'device2']
+variables_list = ['variables1', 'variables2']
+# zip(devices, variables_list) eredménye: [('device1', 'variables1'), ('device2', 'variables2')]
+```
+
+**Teszteljük le:** R1 Gi0/1 portjából húzzuk ki a kábelt. Pc0-ról tracert 192.168.3.10 (-> A serial portokon keresztül megy a forgalom)
+
+## VI. VTP jelszó egységes beállítása
+
+![vtp_init](../PICTURES/vtp_init.png)
+
+[1] Ahhoz, hogy a VTP (VLAN Trunking Protocol) szerver-kliens kommunikáció megfelelően működjön a három switch között, mindhárom switchnek azonos VTP domain névre és VTP jelszóra van szüksége. Ha a domain név vagy a jelszó eltér, a kliens switchek (S2 és S3) nem fogják szinkronizálni a VLAN adatbázist az S1-től (a VTP szerver).
+
+[2] Továbbá az S1 g0/1 és g0/2 interfészei trunk módra vannak állítva az S2 és S3 felé, az S2 és S3 pedig szintén trunk módra vannak konfigurálva az S1 felé. A VLAN 1 (és S1 g0/2-nél minden VLAN) engedélyezve van a trunkon, ami elegendő a VTP működéséhez
+
+```console
+!S1 preconf:
+hostname S1
+enable password cisco
+ip domain-name moricz.lan
+username admin privilege 15 secret admin 
+
+crypto key generate rsa
+1024
+ip ssh version 2
+
+interface vlan 1
+ ip address 172.20.10.121 255.255.255.0
+ no shutdown
+
+vtp mode server
+vtp domain moricz.local
+vtp password class
+
+line vty 0 15
+ login local
+ transport input ssh
+
+ip default-gateway 172.20.10.1
+
+!Trönkportok beállítása
+interface g0/1
+ description S2 felé 
+ switchport mode trunk
+ switchport trunk allowed vlan 1
+ no shutdown
+
+interface g0/2
+ description S3 felé 
+ switchport mode trunk
+ switchport trunk allowed vlan all
+ no shutdown
+
+
+
+
+!S2 preconf:
+hostname S2
+enable password cisco
+ip domain-name moricz.lan
+username admin privilege 15 secret admin 
+
+crypto key generate rsa
+1024
+ip ssh version 2
+
+interface vlan 1
+ ip address 172.20.10.122 255.255.255.0
+ no shutdown
+
+vtp mode client
+vtp domain moricz.local
+vtp password class
+
+line vty 0 15
+ login local
+ transport input ssh
+
+ip default-gateway 172.20.10.1
+
+!Trönkportok beállítása
+interface g0/1
+ description S1 felé 
+ switchport mode trunk
+ switchport trunk allowed vlan all
+ no shutdown
+
+!S3 preconf:
+hostname S3
+enable password cisco
+ip domain-name moricz.lan
+username admin privilege 15 secret admin 
+
+crypto key generate rsa
+1024
+ip ssh version 2
+
+interface vlan 1
+ ip address 172.20.10.123 255.255.255.0
+ no shutdown
+
+vtp mode client
+vtp domain moricz.local
+vtp password class
+
+line vty 0 15
+ login local
+ transport input ssh
+
+ip default-gateway 172.20.10.1
+
+!Trönkportok beállítása
+interface g0/2
+ description S1 felé 
+ switchport mode trunk
+ switchport trunk allowed vlan all
+ no shutdown
 
 ```
 
-Részletesebb hibaüzenetek
-```py
-# ... (előző kód)
 
-for command, success in result:
-    if not success:
-        output = net_connect.send_command('show errors')
-        print(f"A következő parancs végrehajtása sikertelen volt: {command}")
-        print(f"Hibaüzenet: {output}")
+Ezen feltételek teljesülése mellett, ha a server-en (S1) - és csak a server-en - létrehozunk egy 10-es vlant, akkor az a klienseken is látszani fog (értsd szinkronizálódik):
+S1:
 ```
-
-YAML: Konfigurációs fájlok kezeléséhez hasznos.
-
-YAML (YAML Ain't Markup Language) egy emberi olvashatóságot és egyszerűséget szem előtt tartó adatserializálási nyelv. A hálózati eszközök konfigurációinak kezelésében gyakran használják, mivel könnyen szerkeszthető és olvasható konfigurációs fájlokat lehet vele létrehozni.
-
-Miért előnyös a YAML a konfigurációs fájlokhoz?
-
-Olvashatóság: A YAML szintaxisa egyszerű és logikus, így könnyen érthető még bonyolultabb konfigurációk esetén is.
-
-Flexibilitás: Támogatja a különböző adattípusokat (számok, szövegek, listák, szótárak), így sokféle konfigurációt képes reprezentálni.
-Szerkeszthetőség: A YAML fájlok egyszerű szövegfájlok, így bármilyen szövegszerkesztővel módosíthatók.
-Példa egy YAML konfigurációs fájlra (egy router konfigurációja):
-
-YAML
-```yaml
-devices:
-  router1:
-    host: 192.168.1.1
-    username: admin
-    password: mypassword
-    device_type: cisco_ios
-    commands:
-      - interface GigabitEthernet0/1
-      - ip address 192.168.100.1 255.255.255.0
-      - no shutdown
-  router2:
-    # ... hasonló beállítások ...
+vlan 10
+ name Teszt
 ```
-használata
-```yaml
-import yaml
+```show vlan```
+
+illetve a többi switchen is megnézzük a vlan-okat, akkor ott is látszani fognak.
+
+Ha most átállítjuk az S1-en a vtp jelszót ```cisco```-ra,
+S1:
+```
+vtp password cisco
+```
+és ugyanitt létrehozunk egy 20-as vlant, majd azt ellenőrízzük a Client switcheken (S2, S3), akkor azt tapasztaljuk, hogy nem szinkronizálódott.
+
+Tehát bár a VTP server automatikusan propagálja a változásokat, a jelszó változás miatt nem tudja most a szinkronizálást ellvégezni. 
+Írjunk egy programot, mely minden eszközre ugyanazt a jelszót állítja be:
+```
 from netmiko import ConnectHandler
-
-# YAML fájl betöltése
-with open('devices.yaml') as f:
-    devices = yaml.safe_load(f)
-
-# Csatlakozás az első routerhez és konfiguráció módosítása
-for device_name, device_config in devices.items():
-    net_connect = ConnectHandler(**device_config)
-    net_connect.send_config_set(device_config['commands'])
-    net_connect.disconnect()
+vtpass = input("VTP jelszo: ") or "jelszo" 
+switchlist = [
+	{'hostname':'s1', 'device_type': 'cisco_ios','host': '172.20.10.121','username': 'admin','password': 'cisco'},
+	{'hostname':'s2', 'device_type': 'cisco_ios','host': '172.20.10.122','username': 'admin','password': 'cisco'},
+	{'hostname':'s3', 'device_type': 'cisco_ios','host': '172.20.10.123','username': 'admin','password': 'cisco'}
+]
+for switch in switchlist:
+  con = ConnectHandler(**switch)
+  print(switch["host"]," VTP jelszava:")
+  output = con.send_command("show vtp password")
+  print(output)
+  line = output.split()
+  if line[2] != vtpass:
+    o1 = con.send_config_set(['vtp password ' + vtpass])
+    print(o1)
+  con.disconnect()
 ```
-
-Jinja2: Dinamikus sablonok létrehozásához.
-
-A Jinja2 egy erős, Python alapú sablonmotor, amelyet webfejlesztésben és más területeken is széles körben használnak. Kiválóan alkalmas dinamikus sablonok létrehozására, amelyekkel testreszabható kimeneteket generálhatunk különböző adatok alapján
-
-Miért hasznos a Jinja2 a hálózati automatizálásban?
-
-Dinamikus konfigurációk: A Jinja2 segítségével olyan konfigurációs fájlokat hozhatunk létre, amelyekben változók és vezérlő struktúrák szerepelnek. Ez lehetővé teszi, hogy azonos alapsablonból különböző eszközökhöz testreszabott konfigurációkat generáljunk.
-
-Paraméterezhető szkriptek: A szkripteinket is paraméterezhetjük Jinja2 sablonokkal, így például egyetlen szkriptet használhatunk különböző hálózati eszközök konfigurálására.
-
-Olvashatóság: A Jinja2 szintaxisa egyszerű és logikus, így a sablonok könnyen olvashatók és karbantarthatók.
-
-Példa: Egy router konfigurációjának generálása Jinja2-vel
-
-```yaml
-from jinja2 import Template
-
-# Sablon definiálása
-template = Template("""
-interface GigabitEthernet0/{{ interface_number }}
-  ip address {{ ip_address }} 255.255.255.0
-  no shutdown
-""")
-
-# Adatok megadása
-data = {
-    'interface_number': '1',
-    'ip_address': '192.168.1.100'
-}
-
-# Sablon renderelése
-output = template.render(data)
-
-print(output)
-```
-
-Bonyolultabb példa:
-```yaml
-YAML
-routers:
-  - name: router1
-    interfaces:
-      - name: GigabitEthernet0/1
-        ip_address: 192.168.1.100
-      - name: GigabitEthernet0/2
-        ip_address: 192.168.2.100
-  - name: router2
-    # ...
-```
-
-```yaml
-# ... (YAML fájl betöltése)
-
-for router in data['routers']:
-    for interface in router['interfaces']:
-        template = Template("""
-        interface {{ interface['name'] }}
-          ip address {{ interface['ip_address'] }} 255.255.255.0
-          no shutdown
-        """)
-        output = template.render(interface=interface)
-        print(output)
-```
-
 
