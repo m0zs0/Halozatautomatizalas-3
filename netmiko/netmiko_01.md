@@ -405,8 +405,8 @@ A template használatához telepíteni kell a jinja2 könyvtárat:
 ```pip install jinja2```
 
 Adott az alábbi hálózat. 
-(a két routert Switch-en keresztül összekötve ment csak)
-![netmiko](../PICTURES/jinja.png)
+
+![jinja](../PICTURES/jinja.png)
 
 ```console
 !R1 preconf
@@ -513,6 +513,9 @@ variables_list = ['variables1', 'variables2']
 **Teszteljük le:** R1 Gi0/1 portjából húzzuk ki a kábelt. Pc0-ról tracert 192.168.3.10 (-> A serial portokon keresztül megy a forgalom)
 
 ## VI. VTP jelszó egységes beállítása
+
+![vtp_init](../PICTURES/vtp_init.png)
+
 ```
 Azonban a programnak lehet értelme olyan helyzetekben, ahol:
 
