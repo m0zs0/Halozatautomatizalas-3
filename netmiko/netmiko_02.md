@@ -165,7 +165,7 @@ router ospf 1
 from netmiko import ConnectHandler
 from jinja2 import Template
 
-# Eszköz adatai
+# Eszközök adatai
 devices = [
     {
         'device_type': 'cisco_ios',
