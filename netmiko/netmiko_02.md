@@ -89,7 +89,9 @@ A template használatához telepíteni kell a jinja2 könyvtárat:
 ```pip install jinja2```
 
 Adott az alábbi hálózat. 
+
 ![HSRP_jinja](../PICTURES/HSRP_jinja.png)
+
 ```console
 !R1
 hostname R1
@@ -226,6 +228,7 @@ for device, variables in zip(devices, variables_list):
 
 
 ### Hasonlítsd össze a HSRP virtuális router ip beállításait
+
 ```py
 from netmiko import ConnectHandler
 
