@@ -163,25 +163,6 @@ router ospf 1
 ```
 ```py
 from netmiko import ConnectHandler
-
-# Routerek beállításai
-r1 = {
-    'device_type': 'cisco_ios',
-    'host': '192.168.1.2',
-    'username': 'admin',
-    'password': 'password',
-    'secret': 'cisco',
-}
-
-r2 = {
-    'device_type': 'cisco_ios',
-    'host': '192.168.1.3',
-    'username': 'admin',
-    'password': 'password',
-    'secret': 'cisco',
-}
-
-from netmiko import ConnectHandler
 from jinja2 import Template
 
 # Eszköz adatai
