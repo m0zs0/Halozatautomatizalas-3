@@ -104,11 +104,11 @@ line vty 0 15
 login local
 transport input ssh
 
-interface Gig0/1
+interface Serial0/1/0
  ip address 10.1.1.1 255.255.255.252
  no shut 
 
-interface Gig0/2
+interface Gig0/1
  ip address 192.168.1.2 255.255.255.0
  no shut 
 
@@ -123,11 +123,11 @@ interface Gig0/0
  ip address 10.1.1.9 255.255.255.252
  no shut 
 
-interface Gig0/1
+interface Serial0/1/0
  ip address 10.1.1.2 255.255.255.252
  no shut 
 
-interface Gig0/2
+interface Serial0/1/1
  ip address 10.1.1.6 255.255.255.252
  no shut 
 
@@ -149,11 +149,11 @@ line vty 0 15
 login local
 transport input ssh
 
-interface Gig0/1
+interface Serial0/1/1
  ip address 10.1.1.5 255.255.255.252
  no shut 
 
-interface Gig0/2
+interface Gig0/1
  ip address 192.168.1.3 255.255.255.0
  no shut 
 
@@ -185,7 +185,7 @@ devices = [
 
 # Konfigurációs sablon
 template = Template("""
-interface Gig0/2
+interface Gig0/1
  standby 1 ip 192.168.1.1
  standby 1 priority {{pri}}
  standby 1 preempt
