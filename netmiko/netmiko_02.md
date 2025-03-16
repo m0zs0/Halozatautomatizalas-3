@@ -83,7 +83,189 @@ for device in devices:
     get_running_config(device, filename)
 ```
 
-## V. Dinamikus konfigurációk Jinja2-vel
+## V. HSRP beállítása két routeren dinamikusan konfigurációk Jinja2-vel
+
+A template használatához telepíteni kell a jinja2 könyvtárat: 
+```pip install jinja2```
+
+Adott az alábbi hálózat. 
+![HSRP_jinja](../PICTURES/HSRP_jinja.png)
+```console
+!R1
+hostname R1
+enable secret cisco
+ip domain-name soho.hu
+crypto key generate rsa
+1024
+username admin secret password
+line vty 0 15
+login local
+transport input ssh
+
+interface Gig0/1
+ ip address 10.1.1.1 255.255.255.252
+ no shut 
+
+interface Gig0/2
+ ip address 192.168.1.2 255.255.255.0
+ no shut 
+
+router ospf 1
+ network 10.1.1.0 0.0.0.3 area 0
+ network 192.168.1.0 0.0.0.255 area 0
+
+!R2
+hostname R2
+
+interface Gig0/0
+ ip address 10.1.1.9 255.255.255.252
+ no shut 
+
+interface Gig0/1
+ ip address 10.1.1.2 255.255.255.252
+ no shut 
+
+interface Gig0/2
+ ip address 10.1.1.6 255.255.255.252
+ no shut 
+
+
+router ospf 1
+ network 10.1.1.0 0.0.0.3 area 0
+ network 10.1.1.4 0.0.0.3 area 0
+ network 10.1.1.8 0.0.0.3 area 0
+
+
+!R3
+hostname R3
+enable secret cisco
+ip domain-name soho.hu
+crypto key generate rsa
+1024
+username admin secret password
+line vty 0 15
+login local
+transport input ssh
+
+interface Gig0/1
+ ip address 10.1.1.5 255.255.255.252
+ no shut 
+
+interface Gig0/2
+ ip address 192.168.1.3 255.255.255.0
+ no shut 
+
+router ospf 1
+ network 10.1.1.0 0.0.0.3 area 0
+ network 192.168.1.0 0.0.0.255 area 0
+```
+```py
+from netmiko import ConnectHandler
+
+# Routerek beállításai
+r1 = {
+    'device_type': 'cisco_ios',
+    'host': '192.168.1.2',
+    'username': 'admin',
+    'password': 'password',
+    'secret': 'cisco',
+}
+
+r2 = {
+    'device_type': 'cisco_ios',
+    'host': '192.168.1.3',
+    'username': 'admin',
+    'password': 'password',
+    'secret': 'cisco',
+}
+
+from netmiko import ConnectHandler
+from jinja2 import Template
+
+# Eszköz adatai
+devices = [
+    {
+        'device_type': 'cisco_ios',
+        'host': '192.168.1.2',
+        'username': 'admin',
+        'password': 'password',
+        'secret': 'cisco',
+    },
+    {
+        'device_type': 'cisco_ios',
+        'host': '192.168.1.3',
+        'username': 'admin',
+        'password': 'password',
+        'secret': 'cisco',
+    }
+]
+
+# Konfigurációs sablon
+template = Template("""
+interface Gig0/2
+ standby 1 ip 192.168.1.1
+ standby 1 priority {{pri}}
+ standby 1 preempt
+""")
+
+# Változók
+variables_list = [
+    {'host': 'R1', 'pri': '150'},
+    {'host': 'R3', 'pri': '100'}
+]
+
+# Konfiguráció generálása és küldése
+for device, variables in zip(devices, variables_list):
+    config_commands = template.render(variables)
+    connection = ConnectHandler(**device)
+    connection.enable()
+    output = connection.send_config_set(config_commands.split('\n'))
+    print(output)
+    connection.disconnect()
+```
+
+
+### Hasonlítsd össze a HSRP virtuális router ip beállításait
+```py
+from netmiko import ConnectHandler
+
+# Routerek beállításai
+r1 = {
+    'device_type': 'cisco_ios',
+    'host': '192.168.1.2',
+    'username': 'admin',
+    'password': 'password',
+    'secret': 'cisco',
+}
+
+r2 = {
+    'device_type': 'cisco_ios',
+    'host': '192.168.1.3',
+    'username': 'admin',
+    'password': 'password',
+    'secret': 'cisco',
+}
+
+# Kiolvassuk a Gi0/1 'standby 1 ip' beállítását mindkét routeren
+def getConfigDetail(router):
+  connection = ConnectHandler(**r1)
+  connection.enable()
+  output = connection.send_command('show running-config interface GigabitEthernet0/1 | include standby 1 ip')
+  connection.disconnect()
+  return output
+
+r1_ip = getConfigDetail(r1)
+r2_ip = getConfigDetail(r2)
+
+
+# Összehasonlítjuk a standby 1 ip beállításokat
+if r1_ip == r2_ip:
+    print("A két router standby 1 ip beállítása megegyezik.")
+else:
+    print("A két router standby 1 ip beállítása eltér.")
+```
+
+## VI. Dinamikus konfigurációk Jinja2-vel
 
 A template használatához telepíteni kell a jinja2 könyvtárat: 
 ```pip install jinja2```
@@ -196,7 +378,7 @@ variables_list = ['variables1', 'variables2']
 
 **Teszteljük le:** R1 Gi0/1 portjából húzzuk ki a kábelt. Pc0-ról tracert 192.168.3.10 (-> A serial portokon keresztül megy a forgalom)
 
-## VI. VTP jelszó egységes beállítása
+## VII. VTP jelszó egységes beállítása
 
 ![vtp_init](../PICTURES/vtp_init.png)
 
