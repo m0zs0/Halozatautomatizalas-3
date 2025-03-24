@@ -528,7 +528,7 @@ vtp password cisco
 
 Tehát bár a VTP server automatikusan propagálja a változásokat, a jelszó változás miatt nem tudja most a szinkronizálást ellvégezni. 
 Írjunk egy programot, mely minden eszközre ugyanazt a jelszót állítja be:
-```
+```cs
 from netmiko import ConnectHandler
 vtpass = input("VTP jelszo: ") or "jelszo" 
 switchlist = [
