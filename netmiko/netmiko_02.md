@@ -424,6 +424,7 @@ vtp password class
 line vty 0 15
  login local
  transport input ssh
+ exit
 
 ip default-gateway 172.20.10.1
 
@@ -431,7 +432,7 @@ ip default-gateway 172.20.10.1
 interface g0/1
  description S2 felé 
  switchport mode trunk
- switchport trunk allowed vlan 1
+ switchport trunk allowed vlan all
  no shutdown
 
 interface g0/2
@@ -531,9 +532,9 @@ Tehát bár a VTP server automatikusan propagálja a változásokat, a jelszó v
 from netmiko import ConnectHandler
 vtpass = input("VTP jelszo: ") or "jelszo" 
 switchlist = [
-	{'hostname':'s1', 'device_type': 'cisco_ios','host': '172.20.10.121','username': 'admin','password': 'cisco'},
-	{'hostname':'s2', 'device_type': 'cisco_ios','host': '172.20.10.122','username': 'admin','password': 'cisco'},
-	{'hostname':'s3', 'device_type': 'cisco_ios','host': '172.20.10.123','username': 'admin','password': 'cisco'}
+	{'device_type': 'cisco_ios', 'host': '172.20.10.121','username': 'admin','password': 'admin', 'secret': 'cisco'},
+	{'device_type': 'cisco_ios', 'host': '172.20.10.122','username': 'admin','password': 'admin', 'secret': 'cisco'},
+	{'device_type': 'cisco_ios', 'host': '172.20.10.123','username': 'admin','password': 'admin', 'secret': 'cisco'}
 ]
 for switch in switchlist:
   con = ConnectHandler(**switch)
